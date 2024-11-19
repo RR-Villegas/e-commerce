@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Homepage</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="static/hmpg.css" media="screen">
+</head>
+<body>
+
+<!-- Header Section -->
+<header>
+    <div class="title">Clotify District</div>
+    <div class="header-right">
+        <div class="search-bar">
+            <input type="text" placeholder="Search...">
+        </div>
+        <div class="cart-icon">
+            <a href="#cart" id="cart-link"><i class="fas fa-shopping-cart"></i></a>
+        </div>
+    </div>
+</header>
+
+<!-- Navigation Bar -->
+<nav>
+    <ul>
+        <li><a href="#clothing">Clothing</a></li>
+        <li><a href="#deals">Deals</a></li>
+        <li><a href="#customer-service">Customer Service</a></li>
+        {% if user_logged_in %}
+            <li><a href="/profile">Profile</a></li>
+            <li><a href="/logout">Logout</a></li>
+        {% else %}
+            <li><a href="/redirectlogin">Login</a></li>
+        {% endif %}
+    </ul>
+</nav>
+
+<!-- Main Content -->
+<main>
+    {% if user_logged_in %}
+        <h1>Welcome, {{ user_initial }}!</h1>
+    {% else %}
+        <h1>Welcome, Guest!</h1>
+    {% endif %}
+</main>
+
+<!-- Product Categories Container -->
+<div class="categories-container">  
+    <h2>Product Categories</h2>
+    <section class="product-categories">
+        <div class="category-item">
+            <img src="assets/category1.jpg" alt="" class="category-img">
+            <span class="category-name">T-SHIRT</span>
+        </div>
+        <div class="category-item">
+            <img src="assets/category2.jpg" alt="" class="category-img">
+            <span class="category-name">PANTS</span>
+        </div>
+        <div class="category-item">
+            <img src="assets/category3.jpg" alt="" class="category-img">
+            <span class="category-name">JACKETS</span>
+        </div>
+        <div class="category-item">
+            <img src="assets/category4.jpg" alt="" class="category-img">
+            <span class="category-name">SHORTS</span>
+        </div>
+        <div class="category-item">
+            <img src="assets/category5.jpg" alt="" class="category-img">
+            <span class="category-name">DRESS</span>
+        </div>
+    </section>
+</div>
+
+<!-- Sidebar for Cart -->
+<div class="sidebar" id="cart-sidebar">
+    <button class="close-btn" id="close-btn">&times; Close</button>
+    <h2>Your Cart</h2>
+    <div id="cart-items">
+        <!-- Cart items will be dynamically inserted here -->
+        <div class="cart-item">Item 1</div>
+        <div class="cart-item">Item 2</div>
+        <div class="cart-item">Item 3</div>
+    </div>
+    <div id="cart-total">
+        Total: $XX.XX
+    </div>
+</div>
+
+<script>
+    // JavaScript to handle the sidebar toggle
+    const cartLink = document.getElementById('cart-link');
+    const cartSidebar = document.getElementById('cart-sidebar');
+    const closeBtn = document.getElementById('close-btn');
+
+    cartLink.addEventListener('click', function(event) {
+        event.preventDefault(); // Prevent default link behavior
+        cartSidebar.classList.toggle('active'); // Toggle sidebar visibility
+    });
+
+    closeBtn.addEventListener('click', function() {
+        cartSidebar.classList.remove('active'); // Close the sidebar
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            display: flex;
+            height: 100vh;
+            background-color: #f4f4f4;
+        }
+        .sidebar {
+            width: 250px;
+            background-color: #343a40;
+            color: white;
+            padding: 15px;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+        }
+        .sidebar h2 {
+            color: #ffffff;
+        }
+        .sidebar a {
+            color: white;
+            text-decoration: none;
+            display: block;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 4px;
+        }
+        .sidebar a:hover {
+            background-color: #495057;
+        }
+        .content {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        h1 {
+            margin-bottom: 20px;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 20px;
+            background-color: #fff;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+        button {
+            padding: 8px 12px;
+            margin: 5px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            color: white;
+        }
+        .approve {
+            background-color: #28a745; /* Green */
+        }
+        .reject {
+            background-color: #dc3545; /* Red */
+        }
+        .form-section {
+            display: none; /* Hide all sections initially */
+        }
+        .active {
+            display: block; /* Show active section */
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <h2>Admin Panel</h2>
+        <a href="#" onclick="showSection('applications')">Applications</a>
+        <a href="#" onclick="showSection('users')">Users</a>
+        <a href="#" onclick="showSection('settings')">Settings</a>
+        <a href="/logout">Logout</a>
+    </div>
+    <div class="content" id="content">
+        <div id="applications" class="form-section active">
+            <h1>Applications</h1>
+            <table id="applicationsTable">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Full Name</th>
+                        <th>Email</th>
+                        <th>Shop Name</th>
+                        <th>Shop Description</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Rows will be populated here via JavaScript -->
+                </tbody>
+            </table>
+        </div>
+
+        <div id="users" class="form-section">
+            <h1>Users</h1>
+            <table id="usersTable">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Verification Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- User accounts will be populated here -->
+                </tbody>
+            </table>
+        </div>
+
+        <div id="settings" class="form-section">
+            <h1>Settings</h1>
+            <form>
+                <label for="siteName">Site Name:</label>
+                <input type="text" id="siteName" name="siteName" required>
+                <label for="siteDescription">Site Description:</label>
+                <input type="text" id="siteDescription" name="siteDescription" required>
+                <button type="submit">Save Settings</button >
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Function to fetch user accounts from the API
+        async function fetchUserAccounts() {
+            const response = await fetch('/api/fetch_user_accounts/');
+            const users = await response.json();
+            const tableBody = document.getElementById('usersTable').getElementsByTagName('tbody')[0];
+
+            // Clear existing rows
+            tableBody.innerHTML = '';
+
+            // Populate table with user accounts
+            users.forEach(user => {
+                const row = tableBody.insertRow();
+                row.insertCell(0).innerText = user.id;
+                row.insertCell(1).innerText = user.username;
+                row.insertCell(2).innerText = user.email;
+
+                // Create a dropdown for verification status
+                const verificationCell = row.insertCell(3);
+                const select = document.createElement('select');
+                const options = ['verified', 'nonverified', 'admin'];
+
+                options.forEach(option => {
+                    const opt = document.createElement('option');
+                    opt.value = option.toLowerCase(); // Use lowercase for the database
+                    opt.text = option;
+                    if (user.verification.toLowerCase() === opt.value) {
+                        opt.selected = true; // Set the current verification status as selected
+                    }
+                    select.appendChild(opt);
+                });
+
+                select.onchange = () => updateVerificationStatus(user.id, select.value); // Call function on change
+                verificationCell.appendChild(select);
+
+                // Action button for verification
+                const actionCell = row.insertCell(4);
+                const updateButton = document.createElement('button');
+                updateButton.type = 'button';
+                updateButton.textContent = 'Update';
+                updateButton.onclick = () => updateVerificationStatus(user.id, select.value); // Call function on click
+                actionCell.appendChild(updateButton);
+            });
+        }
+
+        // Function to update the user's verification status
+        async function updateVerificationStatus(userId, verificationStatus) {
+            const response = await fetch(`/api/update_verification/${userId}/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ verification: verificationStatus }),
+            });
+            const result = await response.json();
+            if (result.success) {
+                alert('Verification status updated successfully!');
+                fetchUserAccounts(); // Refresh the table
+            } else {
+                alert('Failed to update verification status. Please try again.');
+            }
+        }
+
+        function showSection(sectionId) {
+            const sections = document.querySelectorAll('.form-section');
+            sections.forEach(section => {
+                section.classList.remove('active');
+            });
+            document.getElementById(sectionId).classList.add('active');
+        }
+
+        // Initial fetch of user accounts
+        fetchUserAccounts();
+
+        // Add event listeners to sidebar links
+        const sidebarLinks = document.querySelectorAll('.sidebar a');
+        sidebarLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                showSection(link.textContent.toLowerCase());
+            });
+        });
+    </script>
+</body>
+</html>x

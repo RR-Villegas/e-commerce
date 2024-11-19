@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" type="text/css" href="static/amongus.css" media="screen">
+</head>
+<body>
+  <div id="alert-container">
+    {% with messages = get_flashed_messages(with_categories=True) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert {{ category }}">
+                    {{ message }}
+                    <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+    <div id="password-error" class="alert error hidden">Passwords do not match!</div>
+  </div>
+
+    <div id="main-container" class="container">
+        <div id="form-container" class="form-container">
+            <form id="login-form" class="form active" method="POST" action="/login">
+                <h2 id="login-title">Login</h2>
+                <input id="login-email" type="email" name="email" placeholder="Email" required>
+                <input id="login-password" type="password" name="password" placeholder="Password" required>
+                <button id="login-button" type="submit">Login</button>
+                <p id="login-register-text">Don't have an account? <a href="#" onclick="toggleForms()">Register</a></p>
+            </form>
+            <form id="register-form" class="form hidden" method="POST" action="{{ url_for('register') }}" onsubmit="return validatePassword()">
+              <h2 id="register-title">Register</h2>
+              <input id="register-username" name="username" type="text" class="input-field" value="{{ username }}" placeholder="Username" required>
+              <input id="register-email" name="email" type="email" class="input-field" value="{{ email }}" placeholder="Email" required>
+              <input id="register-password" name="password" type="password" class="input-field" placeholder="Password" required>
+              <input id="register-confirm-password" name="confirm_password" type="password" class="input-field" placeholder="Confirm Password" required>
+              <button id="register-button" type="submit" class="submit-button">Register</button>
+              <p id="register-login-text">Already have an account? <a href="#" onclick="toggleForms()">Login</a></p>
+            </form>
+        </div>
+    </div>
+    <script>
+      window.onload = function() {
+          // Check if we should show the registration form
+          {% if show_register %}
+              document.getElementById('register-form').classList.remove('hidden'); // Show the registration form
+              document.getElementById('login-form').classList.add('hidden'); // Hide the login form
+          {% else %}
+              document.getElementById('login-form').classList.remove('hidden'); // Show the login form
+              document.getElementById('register-form').classList.add('hidden'); // Hide the registration form
+          {% endif %}
+      };
+
+      function validatePassword() {
+          var password = document.getElementById("register-password").value;
+          var confirmPassword = document.getElementById("register-confirm-password").value;
+          var errorDiv = document.getElementById("password-error");
+
+          if (password !== confirmPassword) {
+              errorDiv.classList.remove('hidden'); // Show the error message
+              return false; // Prevent form submission
+          } else {
+              errorDiv.classList.add('hidden'); // Hide the error message if passwords match
+          }
+          return true; // Allow form submission
+      }
+
+      function toggleForms() {
+          const loginForm = document.getElementById('login-form');
+          const registerForm = document.getElementById('register-form');
+
+          if (loginForm.classList.contains('hidden')) {
+              loginForm.classList.remove('hidden');
+              registerForm.classList.add('hidden');
+          } else {
+              registerForm.classList.remove('hidden');
+              loginForm.classList.add('hidden');
+          }
+      }
+    </script>
+</body>
+</html>
