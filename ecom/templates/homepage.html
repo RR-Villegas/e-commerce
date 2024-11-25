@@ -8,100 +8,125 @@
     <link rel="stylesheet" type="text/css" href="static/hmpg.css" media="screen">
 </head>
 <body>
-
-<!-- Header Section -->
-<header>
-    <div class="title">Clotify District</div>
-    <div class="header-right">
-        <div class="search-bar">
-            <input type="text" placeholder="Search...">
-        </div>
-        <div class="cart-icon">
-            <a href="#cart" id="cart-link"><i class="fas fa-shopping-cart"></i></a>
-        </div>
-    </div>
-</header>
-
-<!-- Navigation Bar -->
-<nav>
-    <ul>
-        <li><a href="#clothing">Clothing</a></li>
-        <li><a href="#deals">Deals</a></li>
-        <li><a href="#customer-service">Customer Service</a></li>
-        {% if user_logged_in %}
-            <li><a href="/profile">Profile</a></li>
-            <li><a href="/logout">Logout</a></li>
-        {% else %}
-            <li><a href="/redirectlogin">Login</a></li>
+    <!-- Alert Container -->
+    <div id="alert-container">
+        {% with messages = get_flashed_messages(with_categories=True) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert {{ category }}">
+                        {{ message }}
+                        <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        {% if password_error %}
+            <div id="password-error" class="alert error">
+                Passwords do not match!
+                <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+            </div>
         {% endif %}
-    </ul>
-</nav>
+    </div>
 
-<!-- Main Content -->
-<main>
-    {% if user_logged_in %}
-        <h1>Welcome, {{ user_initial }}!</h1>
-    {% else %}
-        <h1>Welcome, Guest!</h1>
-    {% endif %}
-</main>
+    <!-- Header Section -->
+    <header>
+        <div class="title">Clotify District</div>
+        <div class="header-right">
+            <div class="search-bar">
+                <input type="text" placeholder="Search...">
+            </div>
+            <div class="cart-icon">
+                <a href="#cart" id="cart-link"><i class="fas fa-shopping-cart"></i></a>
+            </div>
+        </div>
+    </header>
 
-<!-- Product Categories Container -->
-<div class="categories-container">  
-    <h2>Product Categories</h2>
-    <section class="product-categories">
-        <div class="category-item">
-            <img src="assets/category1.jpg" alt="" class="category-img">
-            <span class="category-name">T-SHIRT</span>
-        </div>
-        <div class="category-item">
-            <img src="assets/category2.jpg" alt="" class="category-img">
-            <span class="category-name">PANTS</span>
-        </div>
-        <div class="category-item">
-            <img src="assets/category3.jpg" alt="" class="category-img">
-            <span class="category-name">JACKETS</span>
-        </div>
-        <div class="category-item">
-            <img src="assets/category4.jpg" alt="" class="category-img">
-            <span class="category-name">SHORTS</span>
-        </div>
-        <div class="category-item">
-            <img src="assets/category5.jpg" alt="" class="category-img">
-            <span class="category-name">DRESS</span>
+    <!-- Navigation Menu -->
+    <nav>
+        <ul>
+            <li><a href="#clothing">Clothing</a></li>
+            <li><a href="#deals">Deals</a></li>
+            <li><a href="#customer-service">Customer Service</a></li>
+            {% if user_logged_in %}
+                {% if user_verification == 'verified' %}
+                    <li><a href="/sellers_panel">Seller's Panel</a></li>
+                {% else %}
+                    <li><a href="/become_seller">Become Seller</a></li>
+                {% endif %}
+                <li><a href="/logout">Logout</a></li>
+            {% else %}
+                <li><a href="/redirectlogin">Login</a></li>
+            {% endif %}
+        </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <main>
+        <h1>
+            {% if user_logged_in %}
+                Welcome, {{ user_name }}!
+            {% else %}
+                Welcome, Guest!
+            {% endif %}
+        </h1>
+    </main>
+
+    <!-- Product Categories Section -->
+    <section class="categories-container">
+        <h2>Product Categories</h2>
+        <div class="product-categories">
+            <div class="category-item">
+                <img src="static/tshirts.png" alt="T-Shirt" class="category-img">
+                <span class="category-name">T-SHIRT</span>
+            </div>
+            <div class="category-item">
+                <img src="static/pants.png" alt="Pants" class="category-img">
+                <span class="category-name">PANTS</span>
+            </div>
+            <div class="category-item">
+                <img src="assets/category3.jpg" alt="Jackets" class="category-img">
+                <span class="category-name">JACKETS</span>
+            </div>
+            <div class="category-item">
+                <img src="assets/category4.jpg" alt="Shorts" class="category-img">
+                <span class="category-name">SHORTS</span>
+            </div>
+            <div class="category-item">
+                <img src="assets/category5.jpg" alt="Dress" class="category-img">
+                <span class="category-name">DRESS</span>
+            </div>
         </div>
     </section>
-</div>
 
-<!-- Sidebar for Cart -->
-<div class="sidebar" id="cart-sidebar">
-    <button class="close-btn" id="close-btn">&times; Close</button>
-    <h2>Your Cart</h2>
-    <div id="cart-items">
-        <!-- Cart items will be dynamically inserted here -->
-        <div class="cart-item">Item 1</div>
-        <div class="cart-item">Item 2</div>
-        <div class="cart-item">Item 3</div>
+    <!-- Sidebar for Cart -->
+    <div class="sidebar" id="cart-sidebar">
+        <button class="close-btn" id="close-btn">&times; Close</button>
+        <h2>Your Cart</h2>
+        <div id="cart-items">
+            <!-- Cart items will be dynamically inserted here -->
+            <div class="cart-item">Item 1</div>
+            <div class="cart-item">Item 2</div>
+            <div class="cart-item">Item 3</div>
+        </div>
+        <div id="cart-total">
+            Total: $XX.XX
+        </div>
     </div>
-    <div id="cart-total">
-        Total: $XX.XX
-    </div>
-</div>
 
-<script>
-    // JavaScript to handle the sidebar toggle
-    const cartLink = document.getElementById('cart-link');
-    const cartSidebar = document.getElementById('cart-sidebar');
-    const closeBtn = document.getElementById('close-btn');
+    <!-- JavaScript for Sidebar Toggle -->
+    <script>
+        const cartLink = document.getElementById('cart-link');
+        const cartSidebar = document.getElementById('cart-sidebar');
+        const closeBtn = document.getElementById('close-btn');
 
-    cartLink.addEventListener('click', function(event) {
-        event.preventDefault(); // Prevent default link behavior
-        cartSidebar.classList.toggle('active'); // Toggle sidebar visibility
-    });
+        cartLink.addEventListener('click', function(event) {
+            event.preventDefault(); // Prevent default link behavior
+            cartSidebar.classList.toggle('active'); // Toggle sidebar visibility
+        });
 
-    closeBtn.addEventListener('click', function() {
-        cartSidebar.classList.remove('active'); // Close the sidebar
-    });
-</script>
+        closeBtn.addEventListener('click', function() {
+            cartSidebar.classList.remove('active'); // Close the sidebar
+        });
+    </script>
 </body>
 </html>
