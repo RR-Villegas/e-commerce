@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amazon-like Product Detail Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            max-width: 800px;
+            background-color: #f9f9f9;
+        }
+        .product-title {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .product-info {
+            margin: 20px 0;
+        }
+        .price {
+            color: green;
+            font-size: 20px;
+        }
+        .rating {
+            color: gold;
+        }
+        .shipping {
+            font-style: italic;
+        }
+        .description {
+            margin-top: 20px;
+        }
+        .versions {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Product Detail Page</h1>
+
+<div class="product-info">
+    <div class="product-title" id="productName">Product Name</div>
+    <div class="store" id="storeName">Store: Example Store</div>
+    <div class="price" id="productPrice">$19.99</div>
+    <div class="rating" id="productRating">★★★★☆ (4.5/5)</div>
+    <div class="shipping" id="shippingInfo">Free Shipping</div>
+</div>
+
+<div class="versions" id="productVersions">
+    <strong>Available Versions:</strong>
+    <ul>
+        <li>Version 1</li>
+        <li>Version 2</li>
+        <li>Version 3</li>
+    </ul>
+</div>
+
+<div class="description" id="productDescription">
+    <strong>Description:</strong>
+    <p>This is a detailed description of the product. It highlights features, benefits, and specifications.</p>
+</div>
+
+<script>
+    // Example product data
+    const productData = {
+        name: "Example Product",
+        store: "Example Store",
+        price: "$19.99",
+        rating: "★★★★☆ (4.5/5)",
+        shipping: "Free Shipping",
+        versions: ["Version 1", "Version 2", "Version 3"],
+        description: "This is a detailed description of the product. It highlights features, benefits, and specifications."
+    };
+
+    // Function to populate product details
+    function populateProductDetails() {
+        document.getElementById("productName").innerText = productData.name;
+        document.getElementById("storeName").innerText = "Store: " + productData.store;
+        document.getElementById("productPrice").innerText = productData.price;
+        document.getElementById("productRating").innerText = productData.rating;
+        document.getElementById("shippingInfo").innerText = productData.shipping;
+
+        const versionsList = document.getElementById("productVersions").getElementsByTagName("ul")[0];
+        productData.versions.forEach(version => {
+            const li = document.createElement("li");
+            li.innerText = version;
+            versionsList.appendChild(li);
+        });
+
+        document.getElementById("productDescription").getElementsByTagName("p")[0].innerText = productData.description;
+    }
+
+    // Call the function to populate details
+    populateProductDetails();
+</script>
+
+</body>
+</html>
