@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Cart</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="static/cart.css" media="screen"> <!-- Link to your CSS file for styling -->
+</head>
+<body>
+    <header>
+        <div class="title">Your Cart</div>
+        <div class="header-right">
+            <a href="/" class="home-link">Home</a>
+            <div class="cart-icon">
+                <a href="/cart" id="cart-link"><i class="fas fa-shopping-cart"></i></a>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <h1>Your Shopping Cart</h1>
+        <div id="cart-items">
+            <!-- Cart items will be dynamically inserted here -->
+        </div>
+        <div id="cart-total">
+            Total: $0.00
+        </div>
+        <button id="checkout-button">Proceed to Checkout</button>
+    </main>
+
+    <script>
+        // Initialize cart data from the server
+        let cart = {{ cart|tojson }};  // Use Jinja2 to convert the cart data to JSON
+
+        function updateCartDisplay() {
+            const cartContainer = document.getElementById('cart-items');
+            cartContainer.innerHTML = ''; // Clear current cart display
+
+            if (cart.length === 0) {
+                cartContainer.innerHTML = '<p>Your cart is empty.</p>';
+                document.getElementById('cart-total').innerText = 'Total: $0.00';
+                return;
+            }
+
+            let totalPrice = 0;
+
+            cart.forEach(item => {
+                const cartItem = document.createElement('div');
+                cartItem.className = 'cart-item';
+                cartItem.innerText = `${item.name} - $${item.price} x ${item.quantity}`;
+                cartContainer.appendChild(cartItem);
+                totalPrice += item.price * item.quantity;
+            });
+
+            document.getElementById('cart-total').innerText = `Total: $${totalPrice.toFixed(2)}`;
+        }
+
+        // Call the function to update the cart display
+        updateCartDisplay();
+
+        document.getElementById('add-to-cart-button').addEventListener('click', async () => {
+            const quantity = document.getElementById('quantity').value;
+            const productId = {{ product.productid }};
+            const productName = "{{ product.productname }}";
+            const productPrice = {{ product.price }};
+        
+            if (quantity < 1) {
+                alert('Please enter a valid quantity.');
+                return;
+            }
+        
+            // Send a POST request to add the item to the cart
+            const response = await fetch('/api/cart', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    product_id: productId,
+                    product_name: productName,
+                    product_price: productPrice,
+                    quantity: quantity
+                })
+            });
+        
+            if (response.ok) {
+                const updatedCart = await response.json();
+                localStorage.setItem('cart', JSON.stringify(updatedCart));  // Update localStorage
+                alert(`${quantity} of ${productName} added to cart!`);
+            } else {
+                alert('Failed to add to cart. Please try again.');
+            }
+        });
+    </script>
+
+    <style>
+        /* Basic styles for the cart page */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background-color: #333;
+            color: white;
+        }
+
+        .title {
+            font-size: 24px;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+        }
+
+        .home-link {
+            color: white;
+            text-decoration: none;
+            margin-right: 20px;
+        }
+
+        main {
+            margin-top: 20px;
+        }
+
+        #cart-items {
+            margin-bottom: 20px;
+        }
+
+        .cart-item {
+            padding: 10px;
+            background-color: white;
+            margin: 5px 0;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        #cart-total {
+            font-weight: bold;
+        }
+
+        #checkout-button {
+            padding: 10px 20px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #checkout-button:hover {
+            background-color: #218838;
+        }
+    </style>
+</body>
+</html>

@@ -1,0 +1,307 @@
+/* Global Styles */
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    background: url('images4.jpg') no-repeat center center fixed;
+    background-size: cover;
+    color: #333;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+/* Header */
+header {
+    width: 100%;
+    display: flex;
+    padding: 1rem;
+    background: rgba(44, 62, 80, 0.8);
+    color: #f0c674;
+    box-shadow: 0 8px 10px rgba(0, 0, 0, 0.5);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.title {
+    font-size: 2.5rem;
+    margin: 0 30px 0 900px;
+    font-weight: bold;
+    color: #f0c674;
+    text-align: center;
+}
+
+/* Adjusted Search Bar and Cart Icon */
+.header-right {
+    display: flex;
+    align-items: center;
+}
+
+.search-bar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    max-width: 300px;
+    width: 100%;
+    margin-right: 10px;
+}
+
+.search-bar input {
+    width: 100%;
+    padding: 0.5rem;
+    font-size: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.cart-icon {
+    display: flex;
+    align-items: center;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding-left: 1rem;
+}
+
+/* Navigation Bar */
+nav {
+    width: 100%;
+    background-color: rgba(44, 62, 80, 0.9);
+    padding: 1rem;
+    display: flex;
+    justify-content: center;
+    position: fixed;
+    top: 80px;
+    left: 0;
+    z-index: 50;
+}
+
+nav ul {
+    display: flex;
+    justify-content: center;
+    list-style: none;
+    width: 100%;
+    gap: 3rem;
+}
+
+nav ul li a {
+    text-decoration: none;
+    color: #f0c674;
+    font-weight: 500;
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+}
+
+nav ul li a:hover {
+    color: #d4af37;
+    border-bottom: 2px solid #d4af37;
+}
+
+/* Main Content */
+main {
+    width: 80%;
+    max-width: 1000px;
+    padding: 3rem 2rem;
+    background-color: rgba(255, 255, 255, 0.9);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    margin-top: 130px;
+    text-align: center;
+}
+
+main h1 {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #333;
+}
+
+/* Product Categories Container */
+.categories-container {
+    width: 80%;
+    max-width: 1000px;
+    padding: 2rem;
+    background-color: rgba(255, 255, 255, 0.9);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    margin-top: 3rem;
+    text-align: center;
+}
+
+.categories-container h2 {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 1.5rem;
+}
+
+/* Product Categories */
+.product-categories {
+    width: 100%;
+    display: flex;
+    overflow-x: auto;
+    gap: 2rem;
+    padding-bottom: 1rem;
+    margin-top: 2rem;
+}
+
+.category-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 150px;
+    text-align: center;
+    flex-shrink: 0;
+    transition: transform 0.3s ease-in-out;
+    padding: 1rem;
+    border-radius: 10px;
+    background-color: rgba(44, 62, 80, 0.7);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    color: #fff;
+}
+
+.category-item:hover {
+    transform: scale(1.1);
+    background-color: #d4af37;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+}
+
+.category-img {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+.category-name {
+    margin-top: 10px;
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+/* Sidebar for Cart */
+.sidebar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    max-width: 400px;
+    background-color: #2c3e50;
+    color: #fff;
+    padding: 2rem;
+    box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    transform: translateY(100%);
+    transition: transform 0.3s ease-in-out;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+}
+
+.sidebar.active {
+    transform: translateY(0);
+}
+
+.sidebar h2 {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 1.5rem;
+}
+
+.sidebar .cart-item {
+    display: flex;
+    justify-content: space-between;
+    margin: 1rem 0;
+    padding: 0.5rem;
+    border-bottom: 1px solid #f0c674;
+}
+
+.sidebar .cart-item span {
+    font-size: 1rem;
+}
+
+.sidebar .close-btn {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    font-size: 2rem;
+    background: none;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+}
+
+.sidebar #cart-total {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-top: 1.5rem;
+    color: #f0c674;
+    text-align: right;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 100%;
+        max-width: 100%;
+        padding: 1.5rem;
+    }
+
+    .product-categories {
+        gap: 1rem;
+    }
+
+    .categories-container {
+        padding: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .sidebar {
+        padding: 1rem;
+    }
+
+    .product-categories {
+        gap: 1rem;
+    }
+
+    .category-item {
+        width: 130px;
+    }
+}
+
+#alert-container {
+    position: fixed;
+    top: 20px; /* Distance from the top */
+    right: 20px; /* Distance from the right edge */
+    z-index: 1000; /* Ensures it appears above other content */
+    max-width: 300px; /* Set a maximum width for the alert container */
+}
+
+.alert {
+    padding: 15px; /* Inner padding for alert boxes */
+    margin-bottom: 10px; /* Space between alerts */
+    border-radius: 5px; /* Rounded corners */
+    color: white; /* Text color */
+    opacity: 1; /* Fully visible */
+    transition: opacity 0.5s ease; /* Smooth fade effect */
+}
+
+.alert.success {
+    background-color: #4CAF50; /* Green background for success alerts */
+}
+
+.alert.error {
+    background-color: #f44336; /* Red background for error alerts */
+}
+
+.closebtn {
+    margin-left: 15px; /* Space between text and close button */
+    color: white; /* Close button text color */
+    font-weight: bold; /* Bold text for close button */
+    float: right; /* Align close button to the right */
+    font-size: 20px; /* Size of the close button */
+    cursor: pointer; /* Pointer cursor on hover */
+}
