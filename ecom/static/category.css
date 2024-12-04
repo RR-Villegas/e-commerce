@@ -1,0 +1,7 @@
+/* Add this style directly for demonstration; ideally, it should be in your CSS file */
+.product img {
+    width: 150px; /* Set a fixed width */
+    height: 150px; /* Set a fixed height */
+    object-fit: cover; /* Maintain aspect ratio and cover the area */
+    border-radius: 5px; /* Optional: add some rounding to the corners */
+}

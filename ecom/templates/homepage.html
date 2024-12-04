@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Homepage</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="static/homepage.css" media="screen">
+</head>
+<body>
+    <!-- Alert Container -->
+    <div id="alert-container">
+        {% with messages = get_flashed_messages(with_categories=True) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert {{ category }}">
+                        {{ message }}
+                        <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        {% if password_error %}
+            <div id="password-error" class="alert error">
+                Passwords do not match!
+                <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Header Section -->
+    <header>
+        <div class="title">Clotify District</div>
+        <div class="header-right">
+            <form action="{{ url_for('search') }}" method="GET" class="search-bar">
+                <input type="text" name="query" placeholder="Search..." required>
+            </form>
+            <div class="cart-icon">
+                <a href="/cart" id="cart-link"><i class="fas fa-shopping-cart"></i></a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation Menu -->
+    <nav>
+        <ul>
+            {% if user_verification == 'admin' %}  <!-- Check if the user is an admin -->
+                <li><a href="/admin_panel">Admin Panel</a></li>  <!-- Admin Panel link -->
+            {% endif %}
+            <li><a href="/clothing">Clothing</a></li>
+            <li><a href="#deals">Deals</a></li>
+            {% if user_verification != 'admin' %}  <!-- Only show if not an admin -->
+                <li><a href="#customer-service">Customer Service</a></li>
+            {% endif %}
+            {% if user_logged_in %}
+                {% if user_verification == 'verified' %}
+                    <li><a href="/sellers_panel">Seller's Panel</a></li>
+                {% else %}
+                    <li><a href="/become_seller">Become Seller</a></li>
+                {% endif %}
+                <li><a href="/logout">Logout</a></li>
+            {% else %}
+                <li><a href="/redirectlogin">Login</a></li>
+            {% endif %}
+        </ul>
+    </nav>
+    
+    <!-- Main Content -->
+    <main>
+        <h1>
+            {% if user_logged_in %}
+                Welcome, {{ user_name }}!
+            {% else %}
+                Welcome, Guest!
+            {% endif %}
+        </h1>
+    </main>
+
+    <!-- Example HTML for categories on the homepage -->
+    <section class="categories-container">
+        <h2>Product Categories</h2>
+        <div class="product-categories">
+            <a href="{{ url_for('category', category='t-shirts') }}" class="category-item">
+                <img src="static/tshirts.png" alt="T-Shirt" class="category-img">
+                <span class="category-name">T-SHIRT</span>
+            </a>
+            <a href="{{ url_for('category', category='pants') }}" class="category-item">
+                <img src="static/pants.png" alt="Pants" class="category-img">
+                <span class="category-name">PANTS</span>
+            </a>
+            <a href="{{ url_for('category', category='jackets') }}" class="category-item">
+                <img src="static/jacket.png" alt="Jackets" class="category-img">
+                <span class="category-name">JACKETS</span>
+            </a>
+            <a href="{{ url_for('category', category='shorts') }}" class="category-item">
+                <img src="static/shorts.png" alt="Shorts" class="category-img">
+                <span class="category-name">SHORTS</span>
+            </a>
+            <a href="{{ url_for('category', category='dresses') }}" class="category-item">
+                <img src="static/dress.png" alt="Dress" class="category-img">
+                <span class="category-name">DRESS</span>
+            </a>
+        </div>
+    </section>
+
+    <!-- JavaScript for Sidebar Toggle -->
+    <script>
+        // JavaScript code can go here if needed
+    </script>
+</body>x
+</html>

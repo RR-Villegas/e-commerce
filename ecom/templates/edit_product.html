@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Item</title>
+</head>
+<body>
+    <h1>Edit Item</h1>
+    {% if product %}
+        <form action="/edit_item" method="POST">
+            <input type="hidden" name="id" value="{{ product.productid }}">
+            <table>
+                <tr>
+                    <th>Product ID</th>
+                    <td>{{ product.productid }}</td>  <!-- Display Product ID as static text -->
+                </tr>
+                <tr>
+                    <th>Product Name</th>
+                    <td><input type="text" name="name" value="{{ product.productname }}" required></td>
+                </tr>
+                <tr>
+                    <th>Price</th>
+                    <td><input type="number" name="price" value="{{ product.price }}" required></td>
+                </tr>
+                <tr>
+                    <th>Category</th>
+                    <td><input type="text" name="category" value="{{ product.productcategory }}" required></td>
+                </tr>
+                <tr>
+                    <th>Stock</th>
+                    <td><input type="number" name="stock" value="{{ product.productstock }}" required></td>
+                </tr>
+                <tr>
+                    <th>Discount (%)</th>
+                    <td><input type="number" name="discount" value="{{ product.discount_percentage }}" min="0" max="100"></td>
+                </tr>
+            </table>
+            <button type="submit">Update Product</button>
+        </form>
+    {% else %}
+        <p>Product not found.</p>
+    {% endif %}
+</body>
+</html>

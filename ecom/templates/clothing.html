@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clothing Store</title>
+    <link rel="stylesheet" href="static/clothing.css"> <!-- Your CSS file -->
+</head>
+<body>
+    <h1>Available Products</h1>
+    <div id="product-list"></div>
+
+    <script>
+        // Function to fetch and display products
+        async function fetchProducts() {
+            try {
+                const response = await fetch('/api/all_products');
+        
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+        
+                const products = await response.json();
+                console.log('Fetched products:', products);
+        
+                const productList = document.getElementById('product-list');
+        
+                if (products.length === 0) {
+                    productList.innerHTML = '<p>No products available.</p>';
+                    return;
+                }
+        
+                products.forEach(product => {
+                    console.log('Product Image Value:', product.productimage); // Log the image value
+                
+                    // Construct the image URL
+                    let imageUrl = `static/${product.productimage}`; // Just prepend 'static/'
+                
+                    // Log the constructed URL for debugging
+                    console.log('Constructed Image URL:', imageUrl); 
+                
+                    const productDiv = document.createElement('div');
+                    productDiv.className = 'product';
+                
+                    // Update the anchor tag to redirect to the product selection page
+                    productDiv.innerHTML = `
+                        <a href="/product/${product.productid}"> <!-- Updated href -->
+                            <img src="${imageUrl}" alt="${product.productname}" class="small-image">
+                            <h2>${product.productname}</h2>
+                            <p>Price: $${parseFloat(product.price).toFixed(2)}</p>
+                            <p>Category: ${product.productcategory}</p>
+                            <p>Description: ${product.productdescription}</p>
+                        </a>
+                    `;
+                    
+                    productList.appendChild(productDiv);
+                });
+            } catch (error) {
+                console.error('Error fetching products:', error);
+                document.getElementById('product-list').innerHTML = '<p>Error loading products. Please try again later.</p>';
+            }
+        }
+        // Fetch products when the page loads
+        window.onload = fetchProducts;
+    </script>
+</body>
+</html>

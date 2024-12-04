@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seller Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" type="text/css" href="static/sellerspanel.css">
+</head>
+<body>
+    <div class="sidebar">
+        <h2>Seller Dashboard</h2>
+        <nav>
+            <a href="/" class="home-link">Home</a>
+            <a href="#" data-section="overview">Overview</a>
+            <a href="#" data-section="products">Products</a>
+            <a href="/logout" class="logout">Logout</a>
+        </nav>
+    </div>
+    
+    <div class="content">
+        <section id="overview" class="form-section active">
+            <h1>Overview</h1>
+            <div class="stats">
+                <div class="stat">Total Sales: $5000</div>
+                <div class="stat" id="total-orders">Total Orders: 0</div>
+                <div class="stat" id="total-products">Total Products:</div>
+                <div class="stat">Customer Feedback: 4.5/5</div>
+            </div>
+        </section>
+
+        <section id="products" class="form-section">
+            <h1>Products</h1>
+            <div class="product-form">
+                <h2>Add New Product</h2>
+                <form action="/sell_product" method="POST" enctype="multipart/form-data">
+                    <label for="product-name">Product Name:</label>
+                    <input type="text" id="product-name" name="product_name" required autocomplete='off'>
+
+                    <label for="product-price">Product Price:</label>
+                    <input type="number" id="product-price" name="product_price" step="0.01" required>
+
+                    <label for="product-category">Product Category:</label>
+                    <select id="product-category" name="product_category" required>
+                        <option value="t-shirts">T-Shirts</option>
+                        <option value="pants">Pants</option>
+                        <option value="jackets">Jackets</option>
+                        <option value="dresses">Dresses</option>
+                        <option value="shoes">Shoes</option>
+                    </select>
+
+                    <label for="product-description">Product Description:</label>
+                    <textarea id="product-description" name="product_description" required></textarea>
+
+                    <label for="product-image">Product Image:</label>
+                    <input type="file" id="product-image" name="product_image" required>
+
+                    <label for="product-stock">Product Stock:</label>
+                    <input type="number" id="product-stock" name="product_stock" required min="0">
+
+                    <label for="product-discount">Discount Percentage:</label>
+                    <input type="number" id="product-discount" name="discount_percentage" step="0.01" min="0" max="100" placeholder="0-100">
+
+                    <button type="submit">Add Product</button>
+                </form>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Product ID</th>
+                        <th>Product Name</th>
+                        <th>Price</th>
+                        <th>Category</th>
+                        <th>Stock</th>
+                        <th>Discount (%)</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="product-list"></tbody>
+            </table>
+        </section>
+    </div>
+    <script>
+        async function fetchProducts() {
+            try {
+                const response = await fetch('/api/products');
+                if (!response.ok) throw new Error('Failed to fetch products');
+                
+                const products = await response.json();
+                const tableBody = document.getElementById('product-list');
+                tableBody.innerHTML = '';
+                
+                products.forEach(product => {
+                    const row = tableBody.insertRow();
+                    row.innerHTML = `
+                        <td>${product.id}</td>
+                        <td>${product.name}</td>
+                        <td>$${parseFloat(product.price).toFixed(2)}</td>
+                        <td>${product.category}</td>
+                        <td>${product.stock}</td>
+                        <td>${product.discount_percentage ? product.discount_percentage : 'N/A'}</td>
+                        <td>
+                            <button onclick="window.location.href='/edit_item?id=' + ${product.id}" class="edit">Edit</button>
+                            <button class="delete" onclick="deleteProduct(${product.id})">Delete</button>
+                        </td>
+                    `;
+                });
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error fetching products. Please try again later.');
+            }
+        }
+        
+        async function fetchTotalProducts() {
+            try {
+                const response = await fetch('/api/total_products');
+                if (!response.ok) throw new Error('Failed to fetch total products');
+                
+                const data = await response.json();
+                document.getElementById('total-products').innerText = `Total Products: ${data.total_products}`;
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error fetching total products. Please try again later.');
+            }
+        }
+
+        function showSection(sectionId) {
+            document.querySelectorAll('.form-section').forEach(section => section.classList.remove('active'));
+            document.getElementById(sectionId).classList.add('active');
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchProducts();
+            fetchTotalProducts();
+
+            document.querySelectorAll('.sidebar a[data-section]').forEach(link => {
+                link.addEventListener('click', event => {
+                    event.preventDefault();
+                    showSection(link.getAttribute('data-section'));
+                });
+            });
+        });
+
+        async function deleteProduct(productId) {
+            if (confirm(`Are you sure you want to delete product ID ${productId}?`)) {
+                try {
+                    const response = await fetch(`/api/delete_product/${productId}`, { method: 'DELETE' });
+                    const result = await response.json();
+                    if (result.success) {
+                        alert('Product deleted successfully!');
+                        fetchProducts();
+                    } else {
+                        alert('Failed to delete product.');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('Error deleting product. Please try again later.');
+                }
+            }
+        }
+    
+        // Call the function to fetch total orders when the page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchTotalProducts(); // Existing function to fetch total products
+            fetchTotalOrders();   // New function to fetch total orders
+        });
+    </script>
+</body>
+</html>
